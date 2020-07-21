@@ -4,11 +4,12 @@ import { parseType, parseSize } from './util';
 
 export const Button = ({ onPress, title, type, size }) => {
   const style = StyleSheet.flatten([parseType(type), parseSize(size)]);
+
   return (
     <TouchableHighlight
       style={style}
       onPress={onPress}
-      underlayColor="#222222"
+      underlayColor={`${style.backgroundColor}88`}
     >
       <Text style={classes.buttonContent}>{title}</Text>
     </TouchableHighlight>
