@@ -2,20 +2,40 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
+import { calcSum } from './utils';
 
 export default function App() {
   const [formula, setFormula] = useState('');
+  const [result, setResult] = useState(0);
+  const [isActionSeted, setActionSeted] = useState(false); 
 
 
-  const addComma = () => {
-    if (formula.indexOf(',') === -1 && formula.length < MAX_FORMULA_LENGTH) {
-      setFormula(`${formula},`)
+  const addDot = () => {
+    if (formula.indexOf('.') === -1 && formula.length < MAX_FORMULA_LENGTH) {
+      setFormula(`${formula}.`)
     }
   }
   const addDigit = (digit) => () => {
-    if (formula.length < MAX_FORMULA_LENGTH) {
-       setFormula(`${formula}${digit}`);
+    let result = formula;
+    if (isActionSeted) {
+      setActionSeted(false);
+      result = '';
     }
+    if (result.length < MAX_FORMULA_LENGTH) {
+      result = `${result}${digit}`;
+    }
+    setFormula(result);
+  }
+  const actionAdd = () => {
+    const expression = result + parseFloat(formula);
+    setResult(expression);
+    setFormula(expression.toString());
+    setActionSeted(true);
+  }
+  const actionClear = () => {
+    setResult(0);
+    setFormula('');
+    setActionSeted(false);
   }
 
   return (
@@ -25,7 +45,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="AC"
-          onPress={() => setFormula('')}
+          onPress={actionClear}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
@@ -123,6 +143,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="+"
+          onPress={actionAdd}
         />
       </View>
 
@@ -135,8 +156,8 @@ export default function App() {
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
-          title=","
-          onPress={addComma}
+          title="."
+          onPress={addDot}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
