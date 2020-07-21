@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Button } from './components';
+import { Button, Output } from './components';
 import { BUTTON_TYPES } from './constants';
 
 export default function App() {
   const [formula, setFormula] = useState('');
+
+
   const onPress = (char) => () => setFormula(`${formula}${char}`);
 
   return (
     <View style={styles.container}>
-      <Text style={{color: '#fff'}}>{formula}</Text>
+      <Output text={formula} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
@@ -146,7 +148,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: Dimensions.get('window').width * 0.08,
   },
 
   row: {
