@@ -7,6 +7,11 @@ export default function App() {
   const [formula, setFormula] = useState('');
 
 
+  const addComma = () => {
+    if (formula.indexOf(',') === -1) {
+      setFormula(`${formula},`)
+    }
+  }
   const onPress = (char) => () => setFormula(`${formula}${char}`);
 
   return (
@@ -131,7 +136,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title=","
-          onPress={onPress(',')}
+          onPress={addComma}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
