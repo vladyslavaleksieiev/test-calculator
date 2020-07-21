@@ -4,3 +4,5 @@ export const BUTTON_TYPES = {
   BUTTON_UTILITE: 'BUTTON_UTILITE',
   BUTTON_WIDE: 'BUTTON_WIDE',
 };
+
+export const MAX_FORMULA_LENGTH = 10;
