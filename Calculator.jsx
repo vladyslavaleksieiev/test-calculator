@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
 export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
-  const [isCalcPending, setCalcPending] = useState(true);
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [formula, setFormula] = useState('');
 
@@ -56,42 +55,36 @@ export const Calculator = () => {
   };
 
   const pressSum = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionSum(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressSub = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionSub(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressMul = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionMul(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressDiv = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionDiv(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressRes = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(true);
     dispatch(actionRes(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressClear = useCallback(() => {
-    setCalcPending(true);
     dispatch(clear());
     setFormula('');
   }, []);
@@ -110,7 +103,7 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
-      <Output text={formula || isCalcPending || result} />
+      <Output text={formula || result} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
