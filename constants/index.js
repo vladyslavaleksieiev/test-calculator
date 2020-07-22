@@ -5,4 +5,9 @@ export const BUTTON_TYPES = {
   BUTTON_WIDE: 'BUTTON_WIDE',
 };
 
+export const ACTIONS = {
+  SUM: 'SUM',
+  SUB: 'SUB',
+};
+
 export const MAX_FORMULA_LENGTH = 10;

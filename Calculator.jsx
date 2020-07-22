@@ -1,46 +1,49 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, View, Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
-import { calcSum } from './utils';
+import { getResult } from './store/selector';
+import { actionSum, clear, actionSub } from './store/action';
 
-export default function App() {
+export const Calculator = () => {
+  const dispatch = useDispatch();
+  const result = useSelector(getResult);
+  const [isCalcPending, setCalcPending] = useState(true);
   const [formula, setFormula] = useState('');
-  const [result, setResult] = useState(0);
-  const [isActionSeted, setActionSeted] = useState(false); 
 
 
-  const addDot = () => {
+  const appendDot = () => {
     if (formula.indexOf('.') === -1 && formula.length < MAX_FORMULA_LENGTH) {
       setFormula(`${formula}.`)
     }
   }
   const addDigit = (digit) => () => {
-    let result = formula;
-    if (isActionSeted) {
-      setActionSeted(false);
-      result = '';
+    if (formula.length < MAX_FORMULA_LENGTH) {
+      setFormula(`${formula}${digit}`);
     }
-    if (result.length < MAX_FORMULA_LENGTH) {
-      result = `${result}${digit}`;
-    }
-    setFormula(result);
   }
-  const actionAdd = () => {
-    const expression = result + parseFloat(formula);
-    setResult(expression);
-    setFormula(expression.toString());
-    setActionSeted(true);
-  }
-  const actionClear = () => {
-    setResult(0);
+  const pressSum = useCallback(() => {
+    setCalcPending(false);
+    dispatch(actionSum(parseFloat(formula || 0)));
     setFormula('');
-    setActionSeted(false);
+  }, [formula]);
+
+  const pressSub = () => {
+    setCalcPending(false);
+    dispatch(actionSub(parseFloat(formula || 0)));
+    setFormula('');
+  };
+
+  const actionClear = () => {
+    setCalcPending(true);
+    dispatch(clear());
+    setFormula('');
   }
 
   return (
     <View style={styles.container}>
-      <Output text={formula} />
+      <Output text={formula || isCalcPending || result} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
@@ -121,6 +124,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="-"
+          onPress={pressSub}
         />
       </View>
 
@@ -143,7 +147,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="+"
-          onPress={actionAdd}
+          onPress={pressSum}
         />
       </View>
 
@@ -157,7 +161,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="."
-          onPress={addDot}
+          onPress={appendDot}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
@@ -166,7 +170,7 @@ export default function App() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
