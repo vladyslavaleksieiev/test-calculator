@@ -1,4 +1,4 @@
-import { SUM, CLEAR, SUB, RES, MUL } from './actionTypes';
+import { SUM, CLEAR, SUB, RES, MUL, DIV } from './actionTypes';
 
 export const actionSum = (expression) => ({ 
   type: SUM, 
@@ -18,7 +18,12 @@ export const actionRes = (expression) => ({
 export const actionMul = (expression) => ({
   type: MUL,
   payload: { expression },
-})
+});
+
+export const actionDiv = (expression) => ({
+  type: DIV,
+  payload: { expression },
+});
 
 export const clear = () => ({
   type: CLEAR,

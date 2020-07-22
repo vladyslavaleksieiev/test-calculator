@@ -9,6 +9,7 @@ export const ACTIONS = {
   SUM: 'SUM',
   SUB: 'SUB',
   MUL: 'MUL',
+  DIV: 'DIV',
 };
 
 export const MAX_FORMULA_LENGTH = 10;

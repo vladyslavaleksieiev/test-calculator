@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
 import { getResult } from './store/selector';
-import { actionSum, clear, actionSub, actionRes, actionMul } from './store/action';
+import { actionSum, clear, actionSub, actionRes, actionMul, actionDiv } from './store/action';
 
 export const Calculator = () => {
   const dispatch = useDispatch();
@@ -48,6 +48,13 @@ export const Calculator = () => {
     setCalcPaused(false);
     dispatch(actionMul(parseFloat(formula || 0)));
     setFormula('');
+  }, [formula]);
+
+  const pressDiv = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionDiv(parseFloat(formula || 0)));
+    setFormula('');
   })
 
   const pressRes = useCallback(() => {
@@ -83,6 +90,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="÷"
+          onPress={pressDiv}
         />
       </View>
       
