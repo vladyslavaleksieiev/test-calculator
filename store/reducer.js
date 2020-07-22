@@ -1,5 +1,5 @@
 import {
-  SUM, SUB, CLEAR, RES, MUL, DIV, REVERSE,
+  SUM, SUB, CLEAR, RES, MUL, DIV, REVERSE, MEMORY_CLEAR,
 } from './actionTypes';
 import { ACTIONS } from '../constants';
 
@@ -31,7 +31,9 @@ export const reducer = (state = initialState, action) => {
   switch (type) {
     case CLEAR:
       return {
-        ...initialState,
+        ...state,
+        result: 0,
+        action: null,
       };
     case SUM:
       return {
@@ -66,6 +68,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         result: state.result * -1,
+      };
+    case MEMORY_CLEAR:
+      return {
+        ...state,
+        memory: 0,
       };
     default:
       return state;

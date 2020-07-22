@@ -4,4 +4,5 @@ export const RES = 'ACTION_RES';
 export const MUL = 'ACTION_MUL';
 export const DIV = 'ACTION_DIV';
 export const REVERSE = 'ACTION_REVERSE';
+export const MEMORY_CLEAR = 'ACTION_MEMORY_CLEAR';
 export const CLEAR = 'ACTION_CLEAR';

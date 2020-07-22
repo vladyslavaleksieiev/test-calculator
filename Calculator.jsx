@@ -12,6 +12,7 @@ import {
   actionMul,
   actionDiv,
   reverse,
+  clearMemory,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -101,9 +102,14 @@ export const Calculator = () => {
     setFormula('');
   }, [isCalcProcessing]);
 
-  const readMemory = useCallback(() => {
+  const pressMR = useCallback(() => {
+    setCalcProcessing(true);
     setFormula(memory.toString());
   }, [memory]);
+
+  const pressMC = useCallback(() => {
+    dispatch(clearMemory());
+  });
 
   const pressPlusMinus = useCallback(() => {
     if (formula) {
@@ -147,11 +153,12 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="mc"
+          onPress={pressMC}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="mr"
-          onPress={readMemory}
+          onPress={pressMR}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
