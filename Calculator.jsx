@@ -152,8 +152,6 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
-      <Memory text={prevAction} />
-      <Memory text={result} />
       <Memory text={memory} />
       <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
