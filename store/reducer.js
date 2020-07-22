@@ -1,5 +1,5 @@
 import {
-  SUM, SUB, CLEAR, RES, MUL, DIV,
+  SUM, SUB, CLEAR, RES, MUL, DIV, REVERSE,
 } from './actionTypes';
 import { ACTIONS } from '../constants';
 
@@ -55,6 +55,11 @@ export const reducer = (state = initialState, action) => {
       return {
         result: calc(state, payload.expression),
         action: ACTIONS.DIV,
+      };
+    case REVERSE:
+      return {
+        ...state,
+        result: state.result * -1,
       };
     default:
       return state;

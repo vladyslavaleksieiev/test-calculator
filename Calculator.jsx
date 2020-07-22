@@ -11,6 +11,7 @@ import {
   actionRes,
   actionMul,
   actionDiv,
+  reverse,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -95,6 +96,14 @@ export const Calculator = () => {
     setFormula('');
   }, []);
 
+  const pressPlusMinus = useCallback(() => {
+    if (formula) {
+      setFormula(parseFloat(formula) * -1);
+    } else {
+      dispatch(reverse());
+    }
+  });
+
   return (
     <View style={styles.container}>
       <Output text={formula || isCalcPending || result} />
@@ -107,6 +116,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="±"
+          onPress={pressPlusMinus}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
