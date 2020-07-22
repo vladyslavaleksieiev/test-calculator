@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
 import { getResult } from './store/selector';
-import { actionSum, clear, actionSub, actionRes } from './store/action';
+import { actionSum, clear, actionSub, actionRes, actionMul } from './store/action';
 
 export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
   const [isCalcPending, setCalcPending] = useState(true);
+  const [isCalcPaused, setCalcPaused] = useState(false);
   const [formula, setFormula] = useState('');
 
 
@@ -19,25 +20,39 @@ export const Calculator = () => {
     }
   }
   const addDigit = (digit) => () => {
+    if (isCalcPaused) {
+      setCalcPaused(false);
+      dispatch(clear());
+    }
     if (formula.length < MAX_FORMULA_LENGTH) {
       setFormula(`${formula}${digit}`);
     }
   }
-  
+
   const pressSum = useCallback(() => {
     setCalcPending(false);
+    setCalcPaused(false);
     dispatch(actionSum(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressSub = useCallback(() => {
     setCalcPending(false);
+    setCalcPaused(false);
     dispatch(actionSub(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
+  const pressMul = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionMul(parseFloat(formula || 0)));
+    setFormula('');
+  })
+
   const pressRes = useCallback(() => {
     setCalcPending(false);
+    setCalcPaused(true);
     dispatch(actionRes(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
@@ -109,6 +124,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="×"
+          onPress={pressMul}
         />
       </View>
 

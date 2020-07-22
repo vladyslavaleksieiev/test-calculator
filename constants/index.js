@@ -8,7 +8,7 @@ export const BUTTON_TYPES = {
 export const ACTIONS = {
   SUM: 'SUM',
   SUB: 'SUB',
-  RES: 'RES',
+  MUL: 'MUL',
 };
 
 export const MAX_FORMULA_LENGTH = 10;

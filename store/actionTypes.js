@@ -1,4 +1,5 @@
 export const SUM = 'ACTION_SUM';
 export const SUB = 'ACTION_SUB';
 export const RES = 'ACTION_RES';
+export const MUL = 'ACTION_MUL';
 export const CLEAR = 'ACTION_CLEAR';
