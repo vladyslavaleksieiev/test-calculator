@@ -3,7 +3,7 @@ import { StyleSheet, View, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
-import { getResult } from './store/selector';
+import { getResult, getMemory } from './store/selector';
 import {
   actionSum,
   clear,
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
 export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
+  const memory = useSelector(getMemory);
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [isCalcProcessing, setCalcProcessing] = useState(false);
   const [formula, setFormula] = useState('');
@@ -52,7 +53,11 @@ export const Calculator = () => {
       dispatch(clear());
     }
     if (formula.length < MAX_FORMULA_LENGTH) {
-      setFormula(`${formula}${digit}`);
+      if (formula === '0') {
+        setFormula(digit);
+      } else {
+        setFormula(`${formula}${digit}`);
+      }
     }
   };
 
@@ -95,6 +100,10 @@ export const Calculator = () => {
     }
     setFormula('');
   }, [isCalcProcessing]);
+
+  const readMemory = useCallback(() => {
+    setFormula(memory.toString());
+  }, [memory]);
 
   const pressPlusMinus = useCallback(() => {
     if (formula) {
@@ -142,6 +151,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="mr"
+          onPress={readMemory}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}

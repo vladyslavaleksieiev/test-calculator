@@ -6,6 +6,7 @@ import { ACTIONS } from '../constants';
 const initialState = {
   result: 0,
   action: null,
+  memory: 0,
 };
 
 const calc = (state, expression) => {
@@ -34,25 +35,30 @@ export const reducer = (state = initialState, action) => {
       };
     case SUM:
       return {
+        ...state,
         result: calc(state, payload.expression),
         action: ACTIONS.SUM,
       };
     case SUB:
       return {
+        ...state,
         result: calc(state, payload.expression),
         action: ACTIONS.SUB,
       };
     case RES:
       return {
+        ...state,
         result: calc(state, payload.expression),
       };
     case MUL:
       return {
+        ...state,
         result: calc(state, payload.expression),
         action: ACTIONS.MUL,
       };
     case DIV:
       return {
+        ...state,
         result: calc(state, payload.expression),
         action: ACTIONS.DIV,
       };
