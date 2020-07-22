@@ -1,5 +1,5 @@
 import {
-  SUM, SUB, CLEAR, RES, MUL, DIV, REVERSE, MEMORY_CLEAR,
+  SUM, SUB, CLEAR, RES, MUL, DIV, REVERSE, MEMORY_CLEAR, MEMORY_ADD,
 } from './actionTypes';
 import { ACTIONS } from '../constants';
 
@@ -73,6 +73,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         memory: 0,
+      };
+    case MEMORY_ADD:
+      return {
+        ...state,
+        memory: state.memory + parseFloat(payload.expression),
       };
     default:
       return state;

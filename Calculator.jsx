@@ -13,6 +13,7 @@ import {
   actionDiv,
   reverse,
   clearMemory,
+  addMemory,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -111,6 +112,10 @@ export const Calculator = () => {
     dispatch(clearMemory());
   });
 
+  const pressMAdd = useCallback(() => {
+    dispatch(addMemory(formula || result));
+  });
+
   const pressPlusMinus = useCallback(() => {
     if (formula) {
       setFormula(parseFloat(formula) * -1);
@@ -167,6 +172,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="m+"
+          onPress={pressMAdd}
         />
       </View>
 

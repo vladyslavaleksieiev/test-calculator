@@ -1,5 +1,5 @@
 import {
-  SUM, CLEAR, SUB, RES, MUL, DIV, REVERSE, MEMORY_CLEAR,
+  SUM, CLEAR, SUB, RES, MUL, DIV, REVERSE, MEMORY_CLEAR, MEMORY_ADD,
 } from './actionTypes';
 
 export const actionSum = (expression) => ({
@@ -37,4 +37,9 @@ export const reverse = () => ({
 
 export const clearMemory = () => ({
   type: MEMORY_CLEAR,
+});
+
+export const addMemory = (expression) => ({
+  type: MEMORY_ADD,
+  payload: { expression },
 });
