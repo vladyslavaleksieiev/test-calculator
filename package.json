@@ -1,15 +1,22 @@
 {
+  "name": "test-calculator",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "lint": "eslint ./**/*.{js,jsx}",
+    "lint:fix": "eslint ./**/*.{js,jsx} --fix",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watchAll",
     "eject": "expo eject"
   },
   "dependencies": {
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-jest": "^23.18.0",
     "expo": "~38.0.8",
-    "expo-status-bar": "^1.0.2",
+    "jest": "^26.1.0",
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
@@ -19,7 +26,19 @@
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
-    "babel-preset-expo": "~8.1.0"
+    "babel-preset-expo": "~8.1.0",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "husky": "^4.2.5"
   },
-  "private": true
+  "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  }
 }

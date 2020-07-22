@@ -1,7 +1,9 @@
-import { SUM, CLEAR, SUB, RES, MUL, DIV } from './actionTypes';
+import {
+  SUM, CLEAR, SUB, RES, MUL, DIV,
+} from './actionTypes';
 
-export const actionSum = (expression) => ({ 
-  type: SUM, 
+export const actionSum = (expression) => ({
+  type: SUM,
   payload: { expression },
 });
 
