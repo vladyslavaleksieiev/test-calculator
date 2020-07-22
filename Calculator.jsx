@@ -1,20 +1,83 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Button } from './components';
-import { BUTTON_TYPES } from './constants';
+import React, { useState, useCallback } from 'react';
+import { StyleSheet, View, Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, Output } from './components';
+import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
+import { getResult } from './store/selector';
+import { actionSum, clear, actionSub, actionRes, actionMul, actionDiv } from './store/action';
 
-export default function App() {
+export const Calculator = () => {
+  const dispatch = useDispatch();
+  const result = useSelector(getResult);
+  const [isCalcPending, setCalcPending] = useState(true);
+  const [isCalcPaused, setCalcPaused] = useState(false);
   const [formula, setFormula] = useState('');
-  const onPress = (char) => () => setFormula(`${formula}${char}`);
+
+
+  const appendDot = () => {
+    if (formula.indexOf('.') === -1 && formula.length < MAX_FORMULA_LENGTH) {
+      setFormula(`${formula}.`)
+    }
+  }
+  const addDigit = (digit) => () => {
+    if (isCalcPaused) {
+      setCalcPaused(false);
+      dispatch(clear());
+    }
+    if (formula.length < MAX_FORMULA_LENGTH) {
+      setFormula(`${formula}${digit}`);
+    }
+  }
+
+  const pressSum = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionSum(parseFloat(formula || 0)));
+    setFormula('');
+  }, [formula]);
+
+  const pressSub = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionSub(parseFloat(formula || 0)));
+    setFormula('');
+  }, [formula]);
+
+  const pressMul = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionMul(parseFloat(formula || 0)));
+    setFormula('');
+  }, [formula]);
+
+  const pressDiv = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(false);
+    dispatch(actionDiv(parseFloat(formula || 0)));
+    setFormula('');
+  })
+
+  const pressRes = useCallback(() => {
+    setCalcPending(false);
+    setCalcPaused(true);
+    dispatch(actionRes(parseFloat(formula || 0)));
+    setFormula('');
+  }, [formula]);
+
+  const pressClear = useCallback(() => {
+    setCalcPending(true);
+    dispatch(clear());
+    setFormula('');
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={{color: '#fff'}}>{formula}</Text>
+      <Output text={formula || isCalcPending || result} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="AC"
-          onPress={() => setFormula('')}
+          onPress={pressClear}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
@@ -27,7 +90,7 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="÷"
-          onPress={onPress('÷')}
+          onPress={pressDiv}
         />
       </View>
       
@@ -54,22 +117,22 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="7"
-          onPress={onPress('7')}
+          onPress={addDigit('7')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="8"
-          onPress={onPress('8')}
+          onPress={addDigit('8')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="9"
-          onPress={onPress('9')}
+          onPress={addDigit('9')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="×"
-          onPress={onPress('×')}
+          onPress={pressMul}
         />
       </View>
 
@@ -77,22 +140,22 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="4"
-          onPress={onPress('4')}
+          onPress={addDigit('4')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="5"
-          onPress={onPress('5')}
+          onPress={addDigit('5')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="6"
-          onPress={onPress('6')}
+          onPress={addDigit('6')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="-"
-          onPress={onPress('-')}
+          onPress={pressSub}
         />
       </View>
 
@@ -100,22 +163,22 @@ export default function App() {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="1"
-          onPress={onPress('1')}
+          onPress={addDigit('1')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="2"
-          onPress={onPress('2')}
+          onPress={addDigit('2')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="3"
-          onPress={onPress('3')}
+          onPress={addDigit('3')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="+"
-          onPress={onPress('+')}
+          onPress={pressSum}
         />
       </View>
 
@@ -124,29 +187,30 @@ export default function App() {
           type={BUTTON_TYPES.BUTTON_DIGIT}
           size={BUTTON_TYPES.BUTTON_WIDE}
           title="0"
-          onPress={onPress('0')}
+          onPress={addDigit('0')}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
-          title=","
-          onPress={onPress(',')}
+          title="."
+          onPress={appendDot}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="="
-          onPress={onPress('=')}
+          onPress={pressRes}
         />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: Dimensions.get('window').width * 0.08,
   },
 
   row: {

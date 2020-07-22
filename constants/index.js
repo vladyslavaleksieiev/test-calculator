@@ -4,3 +4,12 @@ export const BUTTON_TYPES = {
   BUTTON_UTILITE: 'BUTTON_UTILITE',
   BUTTON_WIDE: 'BUTTON_WIDE',
 };
+
+export const ACTIONS = {
+  SUM: 'SUM',
+  SUB: 'SUB',
+  MUL: 'MUL',
+  DIV: 'DIV',
+};
+
+export const MAX_FORMULA_LENGTH = 10;
