@@ -36,6 +36,7 @@ export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
   const [isCalcPaused, setCalcPaused] = useState(false);
+  const [isCalcProcessing, setCalcProcessing] = useState(false);
   const [formula, setFormula] = useState('');
 
   const appendDot = () => {
@@ -45,6 +46,7 @@ export const Calculator = () => {
   };
 
   const addDigit = (digit) => () => {
+    setCalcProcessing(true);
     if (isCalcPaused) {
       setCalcPaused(false);
       dispatch(clear());
@@ -85,9 +87,14 @@ export const Calculator = () => {
   }, [formula]);
 
   const pressClear = useCallback(() => {
-    dispatch(clear());
+    if (isCalcProcessing) {
+      setCalcProcessing(false);
+      setFormula('');
+    } else {
+      dispatch(clear());
+    }
     setFormula('');
-  }, []);
+  }, [isCalcProcessing]);
 
   const pressPlusMinus = useCallback(() => {
     if (formula) {
@@ -103,11 +110,11 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
-      <Output text={formula || result} />
+      <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
-          title="AC"
+          title={isCalcProcessing ? 'C' : 'AC'}
           onPress={pressClear}
         />
         <Button
