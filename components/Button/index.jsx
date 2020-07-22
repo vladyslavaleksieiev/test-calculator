@@ -7,6 +7,10 @@ const classes = StyleSheet.create({
     fontSize: 30,
     color: '#fff',
   },
+
+  buttonActive: {
+    backgroundColor: '#f3cb96',
+  },
 });
 
 export const Button = ({
@@ -14,8 +18,13 @@ export const Button = ({
   title,
   type,
   size,
+  active,
 }) => {
-  const style = StyleSheet.flatten([parseType(type), parseSize(size)]);
+  const style = StyleSheet.flatten([
+    parseType(type),
+    parseSize(size),
+    active && classes.buttonActive,
+  ]);
 
   return (
     <TouchableHighlight
