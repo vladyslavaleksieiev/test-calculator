@@ -102,7 +102,11 @@ export const Calculator = () => {
     } else {
       dispatch(reverse());
     }
-  });
+  }, [formula]);
+
+  const pressPercent = useCallback(() => {
+    setFormula(result * (formula / 100));
+  }, [result, formula]);
 
   return (
     <View style={styles.container}>
@@ -121,6 +125,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="%"
+          onPress={pressPercent}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
