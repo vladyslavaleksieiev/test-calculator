@@ -42,6 +42,7 @@ export const Calculator = () => {
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [isCalcProcessing, setCalcProcessing] = useState(false);
   const [prevAction, setPrevAction] = useState();
+  const [currentAction, setCurrentAction] = useState();
   const [formula, setFormula] = useState('');
 
   const appendDot = () => {
@@ -74,33 +75,38 @@ export const Calculator = () => {
     dispatch(actionSum(parseFloat(formula || getDefaultFormula())));
     setFormula('');
     setPrevAction(ACTIONS.SUM);
-  }, [formula]);
+    setCurrentAction(ACTIONS.SUM);
+  }, [formula, getDefaultFormula]);
 
   const pressSub = useCallback(() => {
     setCalcPaused(false);
     dispatch(actionSub(parseFloat(formula || getDefaultFormula())));
     setFormula('');
     setPrevAction(ACTIONS.SUB);
-  }, [formula]);
+    setCurrentAction(ACTIONS.SUB);
+  }, [formula, getDefaultFormula]);
 
   const pressMul = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionMul(parseFloat(formula || 1)));
+    dispatch(actionMul(parseFloat(formula || getDefaultFormula())));
     setFormula('');
     setPrevAction(ACTIONS.MUL);
-  }, [formula]);
+    setCurrentAction(ACTIONS.MUL);
+  }, [formula, getDefaultFormula]);
 
   const pressDiv = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionDiv(parseFloat(formula || 1)));
+    dispatch(actionDiv(parseFloat(formula || getDefaultFormula())));
     setFormula('');
     setPrevAction(ACTIONS.DIV);
-  }, [formula]);
+    setCurrentAction(ACTIONS.DIV);
+  }, [formula, getDefaultFormula]);
 
   const pressRes = useCallback(() => {
     setCalcPaused(true);
     dispatch(actionRes(parseFloat(formula || getDefaultFormula())));
     setFormula('');
+    setCurrentAction();
   }, [formula]);
 
   const pressClear = useCallback(() => {
@@ -109,6 +115,8 @@ export const Calculator = () => {
       setFormula('');
     } else {
       dispatch(clear());
+      setPrevAction();
+      setCurrentAction();
     }
     setFormula('');
   }, [isCalcProcessing]);
@@ -144,6 +152,8 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
+      <Memory text={prevAction} />
+      <Memory text={result} />
       <Memory text={memory} />
       <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
@@ -165,6 +175,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="÷"
+          active={currentAction === ACTIONS.DIV}
           onPress={pressDiv}
         />
       </View>
@@ -211,6 +222,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="×"
+          active={currentAction === ACTIONS.MUL}
           onPress={pressMul}
         />
       </View>
@@ -234,6 +246,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="-"
+          active={currentAction === ACTIONS.SUB}
           onPress={pressSub}
         />
       </View>
@@ -257,6 +270,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="+"
+          active={currentAction === ACTIONS.SUM}
           onPress={pressSum}
         />
       </View>
