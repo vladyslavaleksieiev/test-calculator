@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Output } from './components';
-import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
-import { getResult } from './store/selector';
+import { Button, Output, Memory } from './components';
+import { BUTTON_TYPES, MAX_FORMULA_LENGTH, ACTIONS } from './constants';
+import { getResult, getMemory } from './store/selector';
 import {
   actionSum,
   clear,
@@ -12,6 +12,9 @@ import {
   actionMul,
   actionDiv,
   reverse,
+  clearMemory,
+  addMemory,
+  subMemory,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -35,8 +38,10 @@ const styles = StyleSheet.create({
 export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
+  const memory = useSelector(getMemory);
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [isCalcProcessing, setCalcProcessing] = useState(false);
+  const [prevAction, setPrevAction] = useState();
   const [formula, setFormula] = useState('');
 
   const appendDot = () => {
@@ -52,37 +57,49 @@ export const Calculator = () => {
       dispatch(clear());
     }
     if (formula.length < MAX_FORMULA_LENGTH) {
-      setFormula(`${formula}${digit}`);
+      if (formula === '0') {
+        setFormula(digit);
+      } else {
+        setFormula(`${formula}${digit}`);
+      }
     }
   };
 
+  const getDefaultFormula = useCallback(() => (
+    (prevAction === ACTIONS.DIV || prevAction === ACTIONS.MUL) ? 1 : 0
+  ), [prevAction]);
+
   const pressSum = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionSum(parseFloat(formula || 0)));
+    dispatch(actionSum(parseFloat(formula || getDefaultFormula())));
     setFormula('');
+    setPrevAction(ACTIONS.SUM);
   }, [formula]);
 
   const pressSub = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionSub(parseFloat(formula || 0)));
+    dispatch(actionSub(parseFloat(formula || getDefaultFormula())));
     setFormula('');
+    setPrevAction(ACTIONS.SUB);
   }, [formula]);
 
   const pressMul = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionMul(parseFloat(formula || 0)));
+    dispatch(actionMul(parseFloat(formula || 1)));
     setFormula('');
+    setPrevAction(ACTIONS.MUL);
   }, [formula]);
 
   const pressDiv = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionDiv(parseFloat(formula || 0)));
+    dispatch(actionDiv(parseFloat(formula || 1)));
     setFormula('');
+    setPrevAction(ACTIONS.DIV);
   }, [formula]);
 
   const pressRes = useCallback(() => {
     setCalcPaused(true);
-    dispatch(actionRes(parseFloat(formula || 0)));
+    dispatch(actionRes(parseFloat(formula || getDefaultFormula())));
     setFormula('');
   }, [formula]);
 
@@ -95,6 +112,23 @@ export const Calculator = () => {
     }
     setFormula('');
   }, [isCalcProcessing]);
+
+  const pressMR = useCallback(() => {
+    setCalcProcessing(true);
+    setFormula(memory.toString());
+  }, [memory]);
+
+  const pressMC = useCallback(() => {
+    dispatch(clearMemory());
+  }, []);
+
+  const pressMAdd = useCallback(() => {
+    dispatch(addMemory(formula || result));
+  }, [formula, result]);
+
+  const pressMSub = useCallback(() => {
+    dispatch(subMemory(formula || result));
+  }, [formula, result]);
 
   const pressPlusMinus = useCallback(() => {
     if (formula) {
@@ -110,6 +144,7 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
+      <Memory text={memory} />
       <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
         <Button
@@ -138,18 +173,22 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="mc"
+          onPress={pressMC}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="mr"
+          onPress={pressMR}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="m-"
+          onPress={pressMSub}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="m+"
+          onPress={pressMAdd}
         />
       </View>
 
