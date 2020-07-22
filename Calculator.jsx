@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
 import { getResult } from './store/selector';
-import { actionSum, clear, actionSub } from './store/action';
+import { actionSum, clear, actionSub, actionRes } from './store/action';
 
 export const Calculator = () => {
   const dispatch = useDispatch();
@@ -23,23 +23,30 @@ export const Calculator = () => {
       setFormula(`${formula}${digit}`);
     }
   }
+  
   const pressSum = useCallback(() => {
     setCalcPending(false);
     dispatch(actionSum(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
-  const pressSub = () => {
+  const pressSub = useCallback(() => {
     setCalcPending(false);
     dispatch(actionSub(parseFloat(formula || 0)));
     setFormula('');
-  };
+  }, [formula]);
 
-  const actionClear = () => {
+  const pressRes = useCallback(() => {
+    setCalcPending(false);
+    dispatch(actionRes(parseFloat(formula || 0)));
+    setFormula('');
+  }, [formula]);
+
+  const pressClear = useCallback(() => {
     setCalcPending(true);
     dispatch(clear());
     setFormula('');
-  }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -48,7 +55,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="AC"
-          onPress={actionClear}
+          onPress={pressClear}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
@@ -166,6 +173,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
           title="="
+          onPress={pressRes}
         />
       </View>
     </View>

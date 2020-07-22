@@ -1,4 +1,4 @@
-import { SUM, SUB, CLEAR } from './actionTypes';
+import { SUM, SUB, CLEAR, RES } from './actionTypes';
 import { ACTIONS } from '../constants';
 
 const initialState = {
@@ -13,6 +13,8 @@ const calc = (state, expression) => {
       return result + expression;
     case ACTIONS.SUB:
       return result - expression;
+    case ACTIONS.RES:
+      return expression;
     default:
       return result + expression;
   }
@@ -36,6 +38,11 @@ export const reducer = (state = initialState, action) => {
         result: calc(state, payload.expression),
         action: ACTIONS.SUB,
       };
+    case RES:
+      return {
+        result: calc(state, payload.expression),
+        action: ACTIONS.RES,
+      }
     default:
       return state;
   }
