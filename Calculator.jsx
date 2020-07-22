@@ -14,6 +14,7 @@ import {
   reverse,
   clearMemory,
   addMemory,
+  subMemory,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -116,6 +117,10 @@ export const Calculator = () => {
     dispatch(addMemory(formula || result));
   });
 
+  const pressMSub = useCallback(() => {
+    dispatch(subMemory(formula || result));
+  });
+
   const pressPlusMinus = useCallback(() => {
     if (formula) {
       setFormula(parseFloat(formula) * -1);
@@ -168,6 +173,7 @@ export const Calculator = () => {
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
           title="m-"
+          onPress={pressMSub}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
