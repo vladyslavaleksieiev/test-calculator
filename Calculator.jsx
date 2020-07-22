@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Output } from './components';
-import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
+import { Button, Output, Memory } from './components';
+import { BUTTON_TYPES, MAX_FORMULA_LENGTH, ACTIONS } from './constants';
 import { getResult, getMemory } from './store/selector';
 import {
   actionSum,
@@ -41,6 +41,7 @@ export const Calculator = () => {
   const memory = useSelector(getMemory);
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [isCalcProcessing, setCalcProcessing] = useState(false);
+  const [prevAction, setPrevAction] = useState();
   const [formula, setFormula] = useState('');
 
   const appendDot = () => {
@@ -64,33 +65,41 @@ export const Calculator = () => {
     }
   };
 
+  const getDefaultFormula = useCallback(() => (
+    (prevAction === ACTIONS.DIV || prevAction === ACTIONS.MUL) ? 1 : 0
+  ), [prevAction]);
+
   const pressSum = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionSum(parseFloat(formula || 0)));
+    dispatch(actionSum(parseFloat(formula || getDefaultFormula())));
     setFormula('');
+    setPrevAction(ACTIONS.SUM);
   }, [formula]);
 
   const pressSub = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionSub(parseFloat(formula || 0)));
+    dispatch(actionSub(parseFloat(formula || getDefaultFormula())));
     setFormula('');
+    setPrevAction(ACTIONS.SUB);
   }, [formula]);
 
   const pressMul = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionMul(parseFloat(formula || 0)));
+    dispatch(actionMul(parseFloat(formula || 1)));
     setFormula('');
+    setPrevAction(ACTIONS.MUL);
   }, [formula]);
 
   const pressDiv = useCallback(() => {
     setCalcPaused(false);
-    dispatch(actionDiv(parseFloat(formula || 0)));
+    dispatch(actionDiv(parseFloat(formula || 1)));
     setFormula('');
+    setPrevAction(ACTIONS.DIV);
   }, [formula]);
 
   const pressRes = useCallback(() => {
     setCalcPaused(true);
-    dispatch(actionRes(parseFloat(formula || 0)));
+    dispatch(actionRes(parseFloat(formula || getDefaultFormula())));
     setFormula('');
   }, [formula]);
 
@@ -111,15 +120,15 @@ export const Calculator = () => {
 
   const pressMC = useCallback(() => {
     dispatch(clearMemory());
-  });
+  }, []);
 
   const pressMAdd = useCallback(() => {
     dispatch(addMemory(formula || result));
-  });
+  }, [formula, result]);
 
   const pressMSub = useCallback(() => {
     dispatch(subMemory(formula || result));
-  });
+  }, [formula, result]);
 
   const pressPlusMinus = useCallback(() => {
     if (formula) {
@@ -135,6 +144,7 @@ export const Calculator = () => {
 
   return (
     <View style={styles.container}>
+      <Memory text={memory} />
       <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
         <Button
