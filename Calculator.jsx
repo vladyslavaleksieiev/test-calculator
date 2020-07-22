@@ -4,7 +4,32 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Output } from './components';
 import { BUTTON_TYPES, MAX_FORMULA_LENGTH } from './constants';
 import { getResult } from './store/selector';
-import { actionSum, clear, actionSub, actionRes, actionMul, actionDiv } from './store/action';
+import {
+  actionSum,
+  clear,
+  actionSub,
+  actionRes,
+  actionMul,
+  actionDiv,
+} from './store/action';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: Dimensions.get('window').width * 0.08,
+  },
+
+  row: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: Dimensions.get('window').width * 0.04,
+  },
+});
 
 export const Calculator = () => {
   const dispatch = useDispatch();
@@ -13,12 +38,12 @@ export const Calculator = () => {
   const [isCalcPaused, setCalcPaused] = useState(false);
   const [formula, setFormula] = useState('');
 
-
   const appendDot = () => {
     if (formula.indexOf('.') === -1 && formula.length < MAX_FORMULA_LENGTH) {
-      setFormula(`${formula}.`)
+      setFormula(`${formula}.`);
     }
-  }
+  };
+
   const addDigit = (digit) => () => {
     if (isCalcPaused) {
       setCalcPaused(false);
@@ -27,7 +52,7 @@ export const Calculator = () => {
     if (formula.length < MAX_FORMULA_LENGTH) {
       setFormula(`${formula}${digit}`);
     }
-  }
+  };
 
   const pressSum = useCallback(() => {
     setCalcPending(false);
@@ -55,7 +80,7 @@ export const Calculator = () => {
     setCalcPaused(false);
     dispatch(actionDiv(parseFloat(formula || 0)));
     setFormula('');
-  })
+  }, [formula]);
 
   const pressRes = useCallback(() => {
     setCalcPending(false);
@@ -93,7 +118,7 @@ export const Calculator = () => {
           onPress={pressDiv}
         />
       </View>
-      
+
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_DIGIT}
@@ -203,21 +228,3 @@ export const Calculator = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingBottom: Dimensions.get('window').width * 0.08,
-  },
-
-  row: {
-    display: 'flex',
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginBottom: Dimensions.get('window').width * 0.04,
-  }
-});

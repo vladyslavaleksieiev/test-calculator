@@ -2,7 +2,19 @@ import React from 'react';
 import { StyleSheet, TouchableHighlight, Text } from 'react-native';
 import { parseType, parseSize } from './util';
 
-export const Button = ({ onPress, title, type, size }) => {
+const classes = StyleSheet.create({
+  buttonContent: {
+    fontSize: 30,
+    color: '#fff',
+  },
+});
+
+export const Button = ({
+  onPress,
+  title,
+  type,
+  size,
+}) => {
   const style = StyleSheet.flatten([parseType(type), parseSize(size)]);
 
   return (
@@ -15,11 +27,3 @@ export const Button = ({ onPress, title, type, size }) => {
     </TouchableHighlight>
   );
 };
-
-
-const classes = StyleSheet.create({
-  buttonContent: {
-    fontSize: 30,
-    color: '#fff',
-  },
-});
