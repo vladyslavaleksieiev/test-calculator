@@ -11,6 +11,7 @@ import {
   actionRes,
   actionMul,
   actionDiv,
+  reverse,
 } from './store/action';
 
 const styles = StyleSheet.create({
@@ -34,8 +35,8 @@ const styles = StyleSheet.create({
 export const Calculator = () => {
   const dispatch = useDispatch();
   const result = useSelector(getResult);
-  const [isCalcPending, setCalcPending] = useState(true);
   const [isCalcPaused, setCalcPaused] = useState(false);
+  const [isCalcProcessing, setCalcProcessing] = useState(false);
   const [formula, setFormula] = useState('');
 
   const appendDot = () => {
@@ -45,6 +46,7 @@ export const Calculator = () => {
   };
 
   const addDigit = (digit) => () => {
+    setCalcProcessing(true);
     if (isCalcPaused) {
       setCalcPaused(false);
       dispatch(clear());
@@ -55,62 +57,75 @@ export const Calculator = () => {
   };
 
   const pressSum = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionSum(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressSub = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionSub(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressMul = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionMul(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressDiv = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(false);
     dispatch(actionDiv(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressRes = useCallback(() => {
-    setCalcPending(false);
     setCalcPaused(true);
     dispatch(actionRes(parseFloat(formula || 0)));
     setFormula('');
   }, [formula]);
 
   const pressClear = useCallback(() => {
-    setCalcPending(true);
-    dispatch(clear());
+    if (isCalcProcessing) {
+      setCalcProcessing(false);
+      setFormula('');
+    } else {
+      dispatch(clear());
+    }
     setFormula('');
-  }, []);
+  }, [isCalcProcessing]);
+
+  const pressPlusMinus = useCallback(() => {
+    if (formula) {
+      setFormula(parseFloat(formula) * -1);
+    } else {
+      dispatch(reverse());
+    }
+  }, [formula]);
+
+  const pressPercent = useCallback(() => {
+    setFormula(result * (formula / 100));
+  }, [result, formula]);
 
   return (
     <View style={styles.container}>
-      <Output text={formula || isCalcPending || result} />
+      <Output text={isCalcProcessing ? (formula || result) : 0} />
       <View style={styles.row}>
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
-          title="AC"
+          title={isCalcProcessing ? 'C' : 'AC'}
           onPress={pressClear}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="±"
+          onPress={pressPlusMinus}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_UTILITE}
           title="%"
+          onPress={pressPercent}
         />
         <Button
           type={BUTTON_TYPES.BUTTON_CONTROL}
